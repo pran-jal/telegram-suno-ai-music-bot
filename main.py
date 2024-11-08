@@ -1,4 +1,6 @@
-from telegram.bot import main
+from telegram.bot import TelegramBot
 
-while True:
-    main()
+
+
+bot = TelegramBot()
+bot.run()
