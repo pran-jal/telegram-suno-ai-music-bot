@@ -22,7 +22,7 @@ class TelegramBot:
 
 
     def sendAudio(self, chat_id, audio, title, prompt):
-        print(prompt, "|", audio, "|", title, "|", chat_id)
+        print("AUDIO: ", prompt, "|", audio, "|", title, "|", chat_id)
 
         res = get(API_URL + "sendAudio", data = {
             "chat_id" : chat_id, 
@@ -43,7 +43,7 @@ class TelegramBot:
     # send message to private chat
     def sendMessage(self, chat_id, response, prompt):
         response = str(response)
-        print(prompt, "|", response, "|", chat_id)
+        print("TEXT: ", prompt, "|", response, "|", chat_id)
     
         res = get(API_URL + "sendMessage", json = {
             "chat_id" : chat_id, 
@@ -91,7 +91,7 @@ class TelegramBot:
             self.sendMessage(chat_id, f"Hi, I am {NAME}. Type the prompt to generate the song or /help for detailed help.", message_content)
         
         elif message_content == "/help":
-            self.sendMessage(chat_id, "/generate <prompt>. Example /generate good song to sleep to.", message_content)
+            self.sendMessage(chat_id, "/generate 'song_prompt'. Example /generate good song to sleep to.", message_content)
         
         else:
             if message_content.startswith("/generate"):
@@ -100,6 +100,7 @@ class TelegramBot:
             if not message_content:
                 self.sendMessage(chat_id, "Enter your song prompt", message_content)
             
+            self.sendMessage(chat_id, "Generating you song. Please wait", message_content)
             client = suno_client()
             for song_name, song_url in client.get_songs(message_content):
                 self.sendAudio(chat_id, song_url, song_name, message_content)

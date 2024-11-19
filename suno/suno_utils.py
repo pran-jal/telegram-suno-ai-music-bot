@@ -16,7 +16,17 @@ class SunoGenerateUtils:
 
     METHOD = "post"
     API_ENDPOINT = "https://studio-api.prod.suno.com/api/generate/v2/"
-    BODY = "{{gpt_description_prompt:{},mv:chirp-v3-5,prompt:,metadata:{{lyrics_model:default}},make_instrumental:false,user_uploaded_images_b64:^[^],generation_type:TEXT}}"
+    # BODY = "{{gpt_description_prompt:{},mv:chirp-v3-5,prompt:,metadata:{{lyrics_model:default}},make_instrumental:false,user_uploaded_images_b64:[],generation_type:TEXT}}"
+    BODY = {
+        "mv":"chirp-v3-5",
+        "prompt":"",
+        "metadata":{
+            "lyrics_model":"default"
+        },
+        "make_instrumental":False,
+        "user_uploaded_images_b64":[],
+        "generation_type":"TEXT"
+    }
     AUTH_HEADER_TYPE = "Bearer"
     REQUEST_CONTENT_TYPE = "text/plain;charset=UTF-8"
 

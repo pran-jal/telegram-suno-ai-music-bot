@@ -20,12 +20,20 @@ class suno_client:
         )
 
         if response.status_code == 200 and response.json().get("jwt"):
+            print("Suno Auth Success")
             return response.json()["jwt"]
         
         raise Exception("Auth Failure. Check Cookie.")
         
 
     def generate_songs(self, telegram_prompt):
+        payload = SUNO_CONSTANTS.GENERATE.BODY
+
+        payload.update({
+            "gpt_description_prompt": telegram_prompt,
+        })
+        print(payload)
+        
         response = requests.request(
             SUNO_CONSTANTS.GENERATE.METHOD,
             SUNO_CONSTANTS.GENERATE.API_ENDPOINT,
@@ -33,14 +41,16 @@ class suno_client:
                 "Authorization": f"{SUNO_CONSTANTS.GENERATE.AUTH_HEADER_TYPE} {self.get_auth_token()}",
                 "Content-Type": SUNO_CONSTANTS.GENERATE.REQUEST_CONTENT_TYPE
             },
-            json=SUNO_CONSTANTS.GENERATE.BODY.format(telegram_prompt)
+            json=payload
         )
 
-        # if not (response.status_code == 200 and response.json()):
-        #     raise Exception("Auth Failure. Check Cookie.")
         
-        # generated_response = response.json()
-        generated_response = {"id": "97dcb5a7-a919-4697-955c-e6c613ace93e", "clips": [{"id": "51614f77-ff7f-4dbc-9d0c-b2cadd333731", "video_url": "", "audio_url": "", "is_video_pending": False, "major_model_version": "v3", "model_name": "chirp-v3", "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "is_liked": False, "user_id": "8c6b1c92-3bb2-4a24-a3fd-68b7ef7da49f", "display_name": "CunningSoundDesigners6067", "handle": "cunningsounddesigners6067", "is_handle_updated": False, "avatar_image_url": "https://cdn1.suno.ai/defaultOrange.webp", "is_trashed": False, "created_at": "2024-11-08T17:08:56.613Z", "status": "submitted", "title": "", "play_count": 0, "upvote_count": 0, "is_public": False}, {"id": "9ca0539a-80c7-426a-b2ad-07e0292c593a", "video_url": "", "audio_url": "", "is_video_pending": False, "major_model_version": "v3", "model_name": "chirp-v3", "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "is_liked": False, "user_id": "8c6b1c92-3bb2-4a24-a3fd-68b7ef7da49f", "display_name": "CunningSoundDesigners6067", "handle": "cunningsounddesigners6067", "is_handle_updated": False, "avatar_image_url": "https://cdn1.suno.ai/defaultOrange.webp", "is_trashed": False, "created_at": "2024-11-08T17:08:56.613Z", "status": "submitted", "title": "", "play_count": 0, "upvote_count": 0, "is_public": False}], "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "major_model_version": "v3", "status": "complete", "created_at": "2024-11-08T17:08:56.603Z", "batch_size": 1}
+        if not (response.status_code == 200 and response.json()):
+            raise Exception("Auth Failure. Check Cookie.")
+        
+        generated_response = response.json()
+        # generated_response = {"id": "97dcb5a7-a919-4697-955c-e6c613ace93e", "clips": [{"id": "51614f77-ff7f-4dbc-9d0c-b2cadd333731", "video_url": "", "audio_url": "", "is_video_pending": False, "major_model_version": "v3", "model_name": "chirp-v3", "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "is_liked": False, "user_id": "8c6b1c92-3bb2-4a24-a3fd-68b7ef7da49f", "display_name": "CunningSoundDesigners6067", "handle": "cunningsounddesigners6067", "is_handle_updated": False, "avatar_image_url": "https://cdn1.suno.ai/defaultOrange.webp", "is_trashed": False, "created_at": "2024-11-08T17:08:56.613Z", "status": "submitted", "title": "", "play_count": 0, "upvote_count": 0, "is_public": False}, {"id": "9ca0539a-80c7-426a-b2ad-07e0292c593a", "video_url": "", "audio_url": "", "is_video_pending": False, "major_model_version": "v3", "model_name": "chirp-v3", "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "is_liked": False, "user_id": "8c6b1c92-3bb2-4a24-a3fd-68b7ef7da49f", "display_name": "CunningSoundDesigners6067", "handle": "cunningsounddesigners6067", "is_handle_updated": False, "avatar_image_url": "https://cdn1.suno.ai/defaultOrange.webp", "is_trashed": False, "created_at": "2024-11-08T17:08:56.613Z", "status": "submitted", "title": "", "play_count": 0, "upvote_count": 0, "is_public": False}], "metadata": {"prompt": "", "gpt_description_prompt": "a song love in hindi", "type": "gen", "stream": True}, "major_model_version": "v3", "status": "complete", "created_at": "2024-11-08T17:08:56.603Z", "batch_size": 1}
+        print(generated_response)
         self.process_generated_songs(generated_response)
 
 
